@@ -1,0 +1,137 @@
+・Sass
+「Sass（サス、サース）」とは、CSSを拡張して、書きやすく、見やすくしたスタイルシートのことです。
+Syntactically Awesome StyleSheetの略で、直訳すると「文法的に素晴らしい
+スタイルシート」です。従来のCSSにデザイナーやプログラマーが抱いていた不満を解消するスタイルシートです。
+
+メリット
+入れ子の使用が可能
+変数を利用できる
+四則演算が可能
+関数を使用できる
+ミックスイン・継承による効率化
+
+Sassには「SASS」「SCSS」という2種類の書き方があります。
+
+・SASS記法
+SASS記法の大きな特徴は、セミコロンや波括弧を使用しないことです。そのため、コードが簡略化され、
+書く際の負担が少ないというメリットがあります。
+
+SASS記法で書かれたSassファイルの拡張子は「.sass」です。
+
+・SCSS記法
+SCSS記法の特徴は、書き方がCSSに似ていることです。CSSのようにネストを使用するため、CSSに
+触れたことのある人なら直感的に書くことができます。そのため、SCSSのほうが一般的に普及しています。
+ファイルの拡張子は「.scss」になります。
+
+以下４点が重要な点
+・予測しやすい(可読性)
+・再利用しやすい(再利用性)
+・保守しやすい(メンテナンス性)
+・拡張しやすい(拡張性)
+
+OOCSS→BEM→SMACSS→FLOCSSという順番で影響を受けて生まれた。
+しかしSMACSSやFLOCSSはSassやScssを使う事を前提にした設計思想であり、設計思想単体
+での説明では分かりにくい所もあるかと思います。
+
+
+
+・OOCSS
+Object Oriented CSSと呼ばれ、オブジェクト指向に基づいて考案された設計思想。TwitterやGithub
+などで採用されており、Bootstrapがこの思想のもとに設計されている。
+パーツパーツの再利用性を上げ、レゴの様に積み上げていく設計。
+
+原則：
+構造(Structure)とスキン(Skin/見た目)を分けて考える
+コンテナ(Container)と内容(Contents)を分けて考える
+構造とスキンの分離とは
+まず構造とはwidth, height, border, padding, margin など形を作るモノ。一方、スキンはcolor,
+ border-color, background-colorなど見た目のスタイルを司るモノです。
+
+構造をスキンと分離する事で、同じ形だけど違う色のボタンなど再利用しやすくなります。
+
+コンテナとコンテンツの分離とは
+コンテナとコンテンツとは箱とその中身です。グリッドレイアウトなどを想像すると分かりやすいかと思います。コンテナには
+コンテナの、コンテンツにはコンテンツのCSSを別々に定義します。スタイルの適用では要素指定を行わず、クラスでの
+指定のみを行います。
+こうする事でHTMLの構造に依存せず、構造に変化があってもCSSの修正が不要になります。これによりCSSの
+メンテナンス性が向上します。
+
+
+・BEM
+Block Element Modifierの頭文字を取った設計思想で、独特な命名規則を用いる。
+
+OOCSSはマルチクラス(要素に対して複数のクラスを使う)に対し、BEMはシングルクラスでスタイルを適用させます。
+
+原則：
+Block(塊), Element(要素), Modifier(修飾)の３つに分ける
+命名規則　.block__element—modifierに則る
+
+Block, Element, Modifier
+Block：ヘッダー、ナビゲーション、フッターなど独立したパーツ
+Element：Blockの中に含まれる様な検索ボタン、検索フィールドなど機能を持つパーツ
+Modifier:：BlockにもElementにも適用される装飾
+
+・命名規則
+MindBEMdingという独特の命名規則を採用。基本的にはBlockとElementを2重アンダースコアで、
+ElementとModifierを2重ハイフンで区切る。これによりその要素がどのBlockに属するのかが一目瞭然
+となり可読性が上がります。
+
+
+・SMACSS
+Scalable and Modular Architecture for CSSの略で、OOCSSやBEMの流れを汲んで
+生まれた設計思想です。OOCSS同様マルチクラスでスタイルの適用をします。
+
+原則：
+スタイルをBase、Layout、Module、State、Themeの５つに分割する
+一部クラスに接頭辞(プレフィックス)を付ける
+
+Base, Layout, Module, State, Theme
+Base：要素セレクタ・属性セレクタ・擬似セレクタなどに対して適用するスタイルを指定。CSSリセットなどもこちらに含まれる。
+ex. body・a・input...
+
+Layout：ヘッダー、フッター、サイドバーなど構成の大枠のものを定義。接頭辞に.l-や.la-を付ける。
+
+Module：ページを構成する再利用可能なパーツごとのスタイルを指定。接頭辞は付けないので頭に何も付いていない
+クラスがあれば、それはモジュールという事。
+
+State(状態)：Javascriptで状態を変化させる時のパターン分けなどを定義。接頭辞に.is-を付ける。
+ex. .is-disabled・.is-active・.is-errorなど
+
+Theme(テーマ)：レイアウトやモジュールなど全体のテーマカラーを変更したい場合に使用。接頭辞に.theme-を付ける。
+
+SMACSSはSassを利用する事を前提としており、ファイルを細分化した後に全てstyle.scssに＠import
+してコンパイルする事を推奨しています。
+
+
+
+・FLOCSS
+Foundation Layout Object CSSの略。OOCSSやSMACSS、BEMなどのコンセプトを取り入れた設計思想で、
+SMACSSの様なレイヤー構成とBEMの命名規則を採用しています。こちらもマルチクラスでスタイルを適用させます。
+
+原則：
+Foundation, Layout, Objectの３つのレイヤーとObject下のComponent, Project, Utilityの
+３つの子レイヤーで構成される。
+MindBEMdingの命名規則を用いる。
+Objectには接頭辞(プレフィックス)を付ける
+
+Foundation, Layout
+Foundation：Reset.cssやNormalize.cssなどブラウザのデフォルトスタイルの初期化やプロジェクトの基本的なスタイルを定義。
+
+Layout：ヘッダーやメインのコンテンツエリア、サイドバー、フッターなどプロジェクト共通のコンテナブロックのスタイルを定義。
+
+Object(Component, Project, Utility)
+Component：再利用できる小さい単位のパーツを定義。接頭辞に.c-を付ける。
+
+Project：いつかのcomponentとそれに該当しない要素によって構成される集合体。接頭辞に.p-を付ける。ex. 記事一覧、ユーザープロフィール、画像ギャラリーなどのコンテンツ。
+
+Utility：componetやProjectレイヤーの定義では解決出来ないわずかなスタイルの調整などに用いる汎用クラスで単一のスタイルだけを定義したモノ。接頭辞に.u-を付ける。
+
+omponentとProjectの違い
+何を最小単位(component)とするかは人によって異なり、時にCSSを破綻させる原因ともなります。そういった際の分かりやすい分類の例としてPowerpointの図形とグループが挙げられます。
+component：パワポの図形１つの単位
+project：グループ化して動かす単位
+
+Objectの命名規則
+BEM同様Block__Element—Modifierの規則に則って命名する。唯一JavaScriptで操作される様な「状態」
+に付いてはSMACSSのStateパターン同様の.is-を接頭辞に付ける。
+ex. .is-active

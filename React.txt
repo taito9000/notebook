@@ -1,0 +1,506 @@
+
+テックファーム株式会社
+
+
+
+
+
+
+・JavaScriptと HTML が一体になった様な独自の記法（JSX）で記述する。
+
+
+・ReactDOM.render(<App />, document.getElementById("root"));
+	Render関数の最初の引数にAppをコンポーネントとしてレンダリングするという意味、２つ目にどこに反映するかを引数として受け取る。
+
+
+
+・JSX記法とはJavaScriptの中で、リターンしてその中でｈｔｍｌのタグを記述するやり方をいう。
+
+	const App = () => {
+		return (
+		<h1>こんにちは</h1>
+		)	
+	};
+
+
+
+
+・リターンするｈｔｍタグは一つでなければならない。よって、複数をdivで囲うなどする
+
+	index.js
+
+		const App = () => {
+			return (
+				<React.fragment>
+					<h1>こんにちは</h1>
+				</React.fragment>
+			)	
+		};
+
+	divで囲うとこのルールのためだけに無駄な要素をレンダリングしてしまうので、<React.fragment>を使うこと
+	ができるが。<React.fragment>代わりに、<></>で囲っても大丈夫。つまり以下のようになる。
+
+	const App = () => {
+		return (
+			<React.fragment>
+				<h1>こんにちは</h1>
+			</React.fragment>
+		)	
+	};
+
+
+	ReactDOM.render(<App />, document.getElementById("root"));
+
+
+・コンポーネントの命名規則
+
+	コンポーネント名は必ず先頭を大文字から初めるようにしてください。
+	コンポーネント名の先頭文字が小文字だとコンポーネントとして認識されません。
+
+	[正しい例]
+
+	App
+
+	SomeComponent
+
+	[エラーとなる例]
+
+	app
+
+	someComponent
+
+	[エラーにはならないが推奨されない例]
+
+	Some_component
+
+	Some_Component
+
+	Reactのコンポーネントはこのパスカルケースで命名しましょう！
+
+
+・①Reactでのイベントの扱い方と②③スタイルのあてかた
+
+	①
+	returnの上に関数（この場合greeting）を書き、
+	<button イベント（以下の場合、onClick）= {行いたい処理を記述した関数名}></button>となっている。
+	JavaScriptを使う際は波カッコの中で囲う（この場合、関数greeting）　
+
+	②
+	cssファイルから読み込むこともできるが、ｈ１タグのように書く事もできる。最初の｛｝はJavaScriptを
+	使うという意味で、２つ目の｛｝はJavaScriptのオブジェクト(?)としての｛｝である。そして、cssの値は''で
+	文字列として囲う。囲わないと、JavaScriptのの中でredなどないということでエラーになる。
+
+	③
+	pタグのstyleにcssを定義したオブジェクトの変数を入れて記述する。
+
+	const App = () => {
+
+  			const greeting = () => alert("Hello!");
+			
+			const contentStyle = {
+				
+				color: "blue",
+				
+				fonrSize: "18px"
+			}
+
+		return (
+
+    			<>
+
+				<h1 style={{ color: 'red'}}>こんにちは！</h1>
+				
+				<p style={contentStyle}>こんばんは！</p>
+
+      			<button onClick={greeting}>クリックするとアラートHello!</button>
+
+    			</>
+
+  		);
+	};
+
+
+・JSX は、ブラウザの JavaScript エンジンで直接はサポートされていません。
+	このため JSX を使うには Babel を利用します。多くのブラウザがサポート
+	できるバージョンに変換するために使われる JavaScript コンパイラです。
+
+・コンポーネントとは
+	コンポーネント：Reactで画面に表示される部品のことで、表示に必要な
+	データや処理などを1つのオブジェクトにまとめたものです。画面に表示
+	するための部品を作ることによって、いつでも簡単に組み込むことで部品
+	を再利用することができます。
+	
+	・関数コンポーネント
+
+	renderしない。returnする。クラスコンポーネントよりよく使われる。なぜなら、関数コンポーネントは、
+	関数のようにコンポートを作ることをでき、引数（props）を受け、
+	アウトプット（戻り値）としてHTML（JSX）を返す、非常にわかりやすい構造をしているから。
+	
+	関数コンポーネントはJSXを返すプレーンなJavaScript関数で、コンポーネントとして関数を定義する場合は、
+	「表示するエレメントをreturnで返す」ことが基本となります。
+
+	https://yoheiko.com/blog/react-js%E5%85%A5%E9%96%80-%E9%96%A2%E6%95%B0%E3%82%B3%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%8D%E3%83%B3%E3%83%88%E3%81%A8%E3%81%AF/
+
+	・クラスコンポーネント
+	
+	rednerする。
+
+	クラスコンポーネントはReact.Componentを拡張するJavaScriptクラスで、renderメソッドを含みます。
+	React.Componentを拡張するクラスを作成する必要があります。レンダリング対象のJSXは、
+	renderメソッド内で返されます。
+
+・props
+	コンポーネントを跨いで値が渡されるという点が特徴。また、上位コンポーネントでは変数として宣言されるが、
+	下位コンポーネントの中ではpropsを通じて引数として受けるので定数になる（Read Onlyになる）点も重要。
+
+	入力されたものを変更しようとせず、同じ入力に対し同じ結果を返す関数を “純粋 (pure)”な　純関数 であると言う。
+	対照的に、propsを使う関数は自身への入力を変更するため純関数ではない。React は柔軟ですが、1つだけ厳格な
+	ルールがある。全ての Reactコンポーネントは、自己の props に対して純関数のように振る舞わねばならない。
+
+	ここも非常に重要な個所です。
+	特に認識相違がある、というわけではないですが、一段落したらぜひ勉強して頂きたい項目を書いておきます。
+	Reactを使っていくといずれはNext.jsに踏み込んでいくことになるかと思います。
+	Next.jsはReactベースのフレームワークですが、関数型でのプログラミングが推奨されます。
+	関数では、受け取った引数そのものの値を変えることは基本的に望ましくなく、引数はそのままで、別の箱に入れなおすことを良しとします。
+	Javascriptに限らず、あらゆる言語には制御構文があり、中でも反復（ループ）は分岐より難解です。
+	
+	JSには様々な局面で使えるループ処理が存在します。
+	for 
+	forEach
+	map
+	filter
+	reduce
+	for ... in
+	for ... of
+		
+
+	①<コンポーネント名　/> でコンポーネントを呼び出すことができる。　②<コンポーネント名><コンポーネント名/>　でもできるが
+	「children」を使わなくてはならない。
+	そして、コンポーネント名のあとに適当な名前を付けた
+	propsを渡すことができる（以下の場合、colorとmessage）。
+
+		①
+		App.jsxファイル内
+
+		<ColorfulMessage color="blue" message="お元気ですか？"　/>
+
+		
+
+		コンポーネント ColorfulMessage　内
+
+		const ColorfulMessage = (props) => {
+			
+
+			const contentStyle ={		
+
+				color: props.color,
+
+				fontSize: "18px"
+				
+			};
+
+		return <p style={contentStyle}>{props.message}</p>
+
+		};
+
+		
+		②
+
+		App.jsxファイル内
+
+		<ColorfulMessage color="blue">お元気ですか？</ColorfulMessage>
+
+		
+
+		コンポーネント ColorfulMessage　内
+
+		const ColorfulMessage = (props) => {
+			
+
+			const contentStyle ={		
+
+				color: props.color,
+
+				fontSize: "18px"
+				
+			};
+
+		return <p style={contentStyle}>{props.childeren}</p>
+
+		};
+
+
+
+		・分割代入を使ってpropsを指定してコードを整理しよう。
+		colorに対してcolorという値をあてる場合は、オブジェクト名を省略できる（この場合、「color:」の部分）
+
+		App.jsxファイル内
+
+		<ColorfulMessage color="blue">お元気ですか？</ColorfulMessage>
+
+		
+
+		コンポーネント ColorfulMessage　内
+
+		const ColorfulMessage = (props) => {
+			
+			const {color , children} = props;
+
+			const contentStyle ={		
+
+				color,
+
+				fontSize: "18px"
+				
+			};
+
+		return <p style={contentStyle}>{props.childeren}</p>
+
+		};
+
+
+
+・State
+	stateは、クラスコンポーネント内で情報を保有することができるオブジェクトのことであり、特定のコンポ
+	ーネントの内部で宣言され、同コンポーネントのJSXの内部で変数として機能する。
+	例えば、ページ内に時計を表示させているコンポーネントが存在すると仮定します。ページ内で時計の表示を変える際、時刻が変わるたび
+	にrender()メソッドを呼び出すのは効率的ではありません。そこで、時刻の情報をもつstateを用意すると、stateの値を変える
+	ことで表示を変えることができ、効率的に実装することができます。	Stateは各コンポーネントの内側だけで機能し、複数のコンポー
+	ネント間で共有できません。
+
+	変数として動けないということは、例えば、クリックする都度、1をその変数に足してその変数を表示させるコードを書いても、JSX内では
+	表示が変わらないということです。
+	一つのWebサイト又はWebアプリに多数のコンポーネントがある場合は、それぞれがStateを持つことができ、かつ、互いに独立する。
+
+	props（“properties” を短くしたもの）と state は、両方ともプレーンな JavaScript のオブジェクトです。どちらも
+	レンダー結果に影響を及ぼす情報を持ってるが、ある重要な一点が異なっています。props は（関数引数のように）
+	コンポーネントへ渡されるのに対し、state は（関数内で宣言された変数のように）コンポーネントの内部で制御されます。
+
+	再レンダリングの条件
+	⓵stateが更新されたコンポーネントは再レンダリング
+	②propsが変更されたコンポーネントは再レンダリング
+	③再レンダリングされたコンポーネント配下の子コンポーネントは再レンダリング
+
+	const App = ()  = {
+
+		const onClickCountUp = () => {
+			setNum(num + 1);
+		}
+			const [num , setNum] = useState(０);￥
+
+		return(
+			<>
+				<button onClick={onClickCountUp}>カウントアップ</button>
+				<p> {num} </p>
+			</>
+		);
+	};
+
+	stateとして使用する変数を[]内の１つ目に取り、２つ目にその変数を変更するための関数を取る。この場合、動的に変わる
+	numという変数とそれを更新していく、setNumを更新関数として定義した。
+	useStateの()の中には変数の初期値を設定できる。この場合、numの初期値は０である。
+
+	コンポーネント内で動的に変わるものはstateを使う。「変数」と「更新関数」と「初期値」を設定する。
+
+
+
+・useEffect
+
+	基本的にReactで再レンダリングが起きるタイミングは以下の3つ。
+
+	stateが更新された時
+	propsが更新された時
+	親コンポーネントが再レンダリングされた時
+
+	第二引数の配列の値に設定した変数が変化したときだけ中の処理を走らせることができる。
+
+	useEffect(() => {
+		
+		処理
+
+		},[第２引数])
+
+
+
+
+・スプレッド構文
+・分割代入
+・論理演算子
+	&&　は「かつ」と思われるが、実際は、「左の要素がtrueの場合に右側を返す」である。
+	||　は「または」と思われるが、実際は、「左がfalseの場合、右側を処理を動かす。」である。
+
+
+・for 
+	for 文によるループは指定された条件が false と評価されるまで繰り返されます。for 文は以下のような形です :
+
+	for ([初期化式]; [条件式]; [加算式]){
+		処理
+	}
+  		
+
+
+
+・forEach
+	forEach文は、配列データに特化した繰り返し処理を簡単に実行できるメソッドになります。
+
+	書き方
+	const array = [配列データ];
+ 
+	array.forEach( コールバック関数 )
+
+	実際の例
+	var items = [ 'バナナ', 'リンゴ', 'メロン', 'ブドウ' ];
+ 
+	items.forEach(function( value ) {
+     	console.log( value );
+	});
+
+
+	一般的な使い方としては、配列.forEach( 処理 )のように配列データに対してforEachを実行します。
+	forEach文は、配列データの値1つずつに対してコールバック関数に記述した処理を実行できます。
+	コールバック関数は、いくつか引数を受けとることが可能で、これにより簡単な繰り返し処理を実現しています。
+
+
+
+・map
+	
+	書き方
+	const array = [配列データ];
+ 
+	array.map( コールバック関数 )
+
+	実際の例
+	var items = [ 'バナナ', 'リンゴ', 'メロン', 'ブドウ' ];
+ 
+	items.map(function( value ) {
+     	console.log( value );
+	});
+ 
+	では、何が違うのかというと、最も大きなポイントは「返り値」があるかどうかである。
+	つまり、「forEach」は単純に実行するだけのメソッドなのに対して、「map」は実行後の結果
+	を配列データとして返してくれるという点が違う。
+	
+	最大３個まで引数を取れる。
+	「value」は、配列の値
+	「index」は、配列のインデックス番号
+	「array」は、現在処理している配列
+	「map」は元の配列データに一切変更を加えない特徴がありますが、3つ目の引数「array」を利用すれば、
+	元のデータを変更することも可能
+
+	配列データ.map( function( value, index, array ) {
+ 
+	});
+
+
+	これまで、「map」の第1引数に「コールバック関数」を指定していたが、実は第2引数に任意の「オブジェクト」を指定できる。
+
+参考URL：https://www.sejuku.net/blog/21812
+
+
+・filter
+	filter()は、対象となるデータに特定の条件を与えて、それに該当するデータだけを抽出したいようなケース
+	で役に立つメソッドです。
+	
+		
+	const items = [5,2,7,8,3,1,6,8,4];
+ 
+	const result = items.filter( function( value ) {
+ 
+    	//5よりも小さい数値だけを抽出
+    	return value < 5;
+ 
+	})
+ 
+	console.log( result );
+
+	実行結果　[2, 3, 1, 4]
+
+
+
+・reduce
+	JavaScriptの配列ではmapメソッドと同じように配列の要素を操作するreduceというメソッドがある。
+	reduceメソッドを使うと、配列要素の隣同士を演算して要素の初めから終わりまで繰り返すことができる。
+
+
+
+・for ... in
+
+
+ざっくり言えば、
+　for in ⇒ループ対象のキーを取る
+　for of ⇒ループ対象の値を取る
+
+
+	オブジェクトのプロパティが1つずつ「変数」に格納されて処理を行う。変数名はここで任意に指定する。
+
+	for( var 変数 in オブジェクト ) {
+ 
+    		//ここに繰り返し処理を書く
+ 
+	}	
+
+
+・for ... of
+
+	
+
+・find() 
+・some()
+・every() 
+
+
+
+・再レンダリング
+
+以下のコードでは、memoで囲ったコンポーネントはpropsが変更されない限り、再レンダリングされないという意味になる。
+memoのコストもあるので、すべてを囲うわけではないが、複数の要素を持つコンポーネントや今後肥大化が予想される
+コンポーネントは囲ったほうが良いだろう。
+
+	import { memo } from "react";
+
+	export const ChildArea = memo((props) => {
+ 	 	const { open } = props;
+  		console.log("ChildAreaがレンダリングされた");
+
+  		const data = [...Array(2000).keys()];
+
+ 	 	data.forEach(() => {
+ 	   	console.log("...");
+	  	});
+ 	 	console.log(data);
+  		return (
+   	 	<>
+    	  	{open ? (
+        		<div style={style}>
+         	 	<p>子コンポーネント</p>
+        		</div>
+     	 	) : null}
+   		 </>
+  		);
+		});
+
+
+
+★アロー関数で書いた関数は毎回新しい関数を生成しているという風に認識されるので、propsからは毎回違う関数と認識され、
+propsが毎回変わっていると認識され再レンダリングが起きる。
+そこで使うのが、useCallback()である。第二引数には見張っておきたい値を入れる。
+入れないと、最初に生成したものをずっと使うようになる。
+
+	  const onClickClose = useCallback(() => setOpen(false), [setOpen]);
+
+変数のmemo化はuseMemoを使う。以下の場合だと、４がtempとして設定され続ける。第二引数に1+3の部分に入る値を設定すれば、
+そこの値が変わった時だけ、動くようになる。
+	const temp = useMemo(() => 1+3 ,[]);
+	console.log(temp);
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+・SSR（Server Side Rendering）とSSG（Static Site Generator）
+
+　SSRでは、ユーザーがアクセスした時にサーバー側でHTMLを生成します。SPAではブラウザ側でHTMLを生成していましたが、SSRではサーバー側
+でHTMLを生成し、レンダリング済みのHTMLをブラウザ側に提供します。つまり、ブラウザの大半の仕事をサーバー側に任せ、
+ブラウザの仕事は最後の描画だけとなります。
+SSRは、リクエストごとにHTMLを生成するため、常に最新の状態をユーザーに見せることができます。
+
+　SSGでは、アプリビルド時にHTMLを生成します。リクエストごとにHTMLを生成せず、事前にビルドされたHTMLを再利用する形となるため、
+SSRよりもさらに高速な表示が可能です。SSGはビルド時にHTMLを生成するため、更新頻度の高いページには適していません。
+
+・ターミナル上で npm run devでローカルサーバーが立ち上がる
+
+
+
+・Link
+
+画面遷移する
+
+  	 <h1 className={styles.title}>
+          Learn to <a href="https://nextjs.org">Next.js!</a>
+      </h1>
+
+画面遷移しない。早い。
+
+ 	 <h1 className={styles.title}>
+          Learn to <Link href="https://nextjs.org">Next.js!</Link>
+      </h1>
+
+画面遷移しない。早い。SEO対策になる。
+
+  	 <h1 className={styles.title}>
+          Learn to <Link href="https://nextjs.org">
+            <a>Next.js!</a>
+            </Link>
+     </h1>
+
+
+・静的画像ファイルの取り扱い（publicディレクトトリ）
+
+ 	<span className={styles.logo}>
+            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          </span>
+
+	/vercel.svgは「/public/vercel.svg」という意味だが、publicは常に省略される。
+
+・メタデータ
+ 			<Head>
+                <title>最初の投稿</title>
+            　　</Head>
+
+メタデータは<Head></Head>を使って指定する。
+
+
+
+
