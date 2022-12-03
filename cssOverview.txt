@@ -43,6 +43,28 @@
 	しかしSMACSSやFLOCSSはSassやScssを使う事を前提にした設計思想であり、設計思想単体
 	での説明では分かりにくい所もあるかと思います。
 
+
+webpackを使ってscssをコンパイルする方法
+https://original-game.com/compile-from-sass-to-css-with-webpack/
+
+
+
+$ npm install webpack webpack-cli css-loader sass-loader sass mini-css-extract-plugin webpack-fix-style-only-entries --save-dev
+
+
+css-loader: CSSをCommonJSに変換する
+sass-loader: sassやscssファイルを読み込んで、CSSにコンパイルする
+sass: sass-loaderではDart SassかNode Sassをインストールする必要がある（Dart Sassが強く推奨されている）
+mini-css-extract-plugin: CSSを別ファイルに保存するためのもの
+webpack-fix-style-only-entries: 不要なファイルを（jsファイル）を削除するためのもの
+
+
+
+
+
+
+
+
 ・・・ｃｓｓプロパティ・・・
 
 ・ｃｓｓのOverflow
