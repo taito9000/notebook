@@ -1,3 +1,28 @@
+・LaravelでSassをコンパイルする方法
+１、  
+	plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/scss/app.scss','resources/js/app.js'],
+            refresh: true,						これを追加↑
+        }),
+    ],
+    server: {
+        hmr: {
+            host: 'localhost'
+        }
+    }
+
+２、
+	'resources/scss/app.scss'の通りにフォルダとファイルを追加
+
+３、
+	blaldeファイル等の読み込みたい箇所に下記を記述します。
+	Laravel Mixではコンパイル後のソースのパスを記述しましたが、Viteの場合はコンパイル前のソースのパスを記述します。
+
+	app.blade.php等
+
+
+
 ・BEM
 	Block Element Modifierの頭文字を取った設計思想で、独特な命名規則を用いる。
 	OOCSSはマルチクラス(要素に対して複数のクラスを使う)に対し、BEMはシングルクラスでスタイルを適用させます。
