@@ -100,7 +100,8 @@ $a
 
 ・・・・・・Laravel・・・・・・
 
-・xamppのhtdocs内で　composer create-project laravel/laravel プロジェクト名
+・xamppのhtdocs内で　composer create-project laravel/laravel=7.2.5 repsWeb
+
 でプロジェクトを作成。
 
 
