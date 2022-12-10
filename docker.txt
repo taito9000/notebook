@@ -1,0 +1,21 @@
+curl -s https://laravel.build/repWeb | bash
+
+・curlコマンド
+	curl コマンドは、様々な通信プロトコルでデータの送受信を行うことができるコマンドです。 
+	よく使われる方法としては、Web サイトへ http リクエストを送信してファイルの表示、ダウンロード
+	等があります。 また様々なオプションを指定する事で、データ取得時の条件や、
+	取得する情報を変える事ができます。
+
+-S, --show-error
+
+When used with -s, --silent, it makes curl show an error message if it
+fails.
+
+-s, --silent
+
+Silent or quiet mode. Don't show progress meter or error messages.
+Makes Curl mute. It will still output the data you ask for,
+potentially even to the terminal/stdout unless you redirect it.
+
+以下はオフィシャルサイトのマニュアルページリンクです。
+https://curl.haxx.se/docs/manpage.html#-S
