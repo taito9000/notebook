@@ -1,0 +1,32 @@
+
+・FLOCSS
+	Foundation Layout Object CSSの略。OOCSSやSMACSS、BEMなどのコンセプトを取り入れた設計思想で、
+	SMACSSの様なレイヤー構成とBEMの命名規則を採用しています。こちらもマルチクラスでスタイルを適用させます。
+
+	原則：
+	Foundation, Layout, Objectの３つのレイヤーとObject下のComponent, Project, Utilityの
+	３つの子レイヤーで構成される。
+	MindBEMdingの命名規則を用いる。
+	Objectには接頭辞(プレフィックス)を付ける
+
+	Foundation, Layout
+	Foundation：Reset.cssやNormalize.cssなどブラウザのデフォルトスタイルの初期化やプロジェクトの基本的なスタイルを定義。
+		
+	Layout：ヘッダーやメインのコンテンツエリア、サイドバー、フッターなどプロジェクト共通のコンテナブロックのスタイルを定義。
+
+	Object(Component, Project, Utility)
+	Component：再利用できる小さい単位のパーツを定義。接頭辞に.c-を付ける。
+	
+	Project：いつかのcomponentとそれに該当しない要素によって構成される集合体。接頭辞に.p-を付ける。ex. 記事一覧、ユーザープロフィール、画像ギャラリーなどのコンテンツ。
+
+	Utility：componetやProjectレイヤーの定義では解決出来ないわずかなスタイルの調整などに用いる汎用クラスで単一のスタイルだけを定義したモノ。接頭辞に.u-を付ける。
+	
+	omponentとProjectの違い
+	何を最小単位(component)とするかは人によって異なり、時にCSSを破綻させる原因ともなります。そういった際の分かりやすい分類の例としてPowerpointの図形とグループが挙げられます。
+	component：パワポの図形１つの単位
+	project：グループ化して動かす単位
+
+	Objectの命名規則
+	BEM同様Block__Element—Modifierの規則に則って命名する。唯一JavaScriptで操作される様な「状態」
+	に付いてはSMACSSのStateパターン同様の.is-を接頭辞に付ける。
+	ex. .is-active

@@ -1,0 +1,87 @@
+・・・ｃｓｓプロパティ・・・
+
+・ｃｓｓのOverflow
+	overflowとはCSSのプロパティの１つで「要素のボックスからはみ出た部分をどう扱うか」を指定します。
+
+	visi	ble：初期値。はみ出た部分が、はみ出たままの状態で表示される場合あり
+	hidden：はみ出た部分が隠れる
+	scroll：はみ出た部分が隠れてスクロールできる状態に
+	auto：ブラウザにより表示が変わる（基本的にはスクロールできる状態に）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+・・・記法・・・
+
+
+
+・Sass
+	「Sass（サス、サース）」とは、CSSを拡張して、書きやすく、見やすくしたスタイルシートのことです。
+	Syntactically Awesome StyleSheetの略で、直訳すると「文法的に素晴らしい
+	スタイルシート」です。従来のCSSにデザイナーやプログラマーが抱いていた不満を解消するスタイルシートです。
+
+	メリット
+	入れ子の使用が可能
+	変数を利用できる
+	四則演算が可能
+	関数を使用できる
+	ミックスイン・継承による効率化
+
+	Sassには「SASS」「SCSS」という2種類の書き方があります。
+
+・SASS記法
+	SASS記法の大きな特徴は、セミコロンや波括弧を使用しないことです。そのため、コードが簡略化され、
+	書く際の負担が少ないというメリットがあります。
+
+	SASS記法で書かれたSassファイルの拡張子は「.sass」です。
+
+・SCSS記法
+	SCSS記法の特徴は、書き方がCSSに似ていることです。CSSのようにネストを使用するため、CSSに
+	触れたことのある人なら直感的に書くことができます。そのため、SCSSのほうが一般的に普及しています。
+	ファイルの拡張子は「.scss」になります。
+
+	以下４点が重要な点
+	・予測しやすい(可読性)
+	・再利用しやすい(再利用性)
+	・保守しやすい(メンテナンス性)
+	・拡張しやすい(拡張性)
+
+	OOCSS→BEM→SMACSS→FLOCSSという順番で影響を受けて生まれた。
+	しかしSMACSSやFLOCSSはSassやScssを使う事を前提にした設計思想であり、設計思想単体
+	での説明では分かりにくい所もあるかと思います。
+
+
+
+
+
+webpackを使ってscssをコンパイルする方法
+https://original-game.com/compile-from-sass-to-css-with-webpack/
+
+
+
+$ npm install webpack webpack-cli css-loader sass-loader sass mini-css-extract-plugin webpack-fix-style-only-entries --save-dev
+
+
+css-loader: CSSをCommonJSに変換する
+sass-loader: sassやscssファイルを読み込んで、CSSにコンパイルする
+sass: sass-loaderではDart SassかNode Sassをインストールする必要がある（Dart Sassが強く推奨されている）
+mini-css-extract-plugin: CSSを別ファイルに保存するためのもの
+webpack-fix-style-only-entries: 不要なファイルを（jsファイル）を削除するためのもの
+
+
+
+
+
+

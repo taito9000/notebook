@@ -1,0 +1,63 @@
+
+
+・BEM
+
+
+・BEMを使う目的
+	BEMは名前の衝突を避けるために考案されたCSS設計です。
+
+	保守性の高さを解決するための手法は他にもあり、HTMLはシンプルがな書き方が求められますが、
+	まだまだ決定打に欠けています。
+	BEMは見た目が汚いですが、シンプルを求めて面倒な目にあうよりは、少々汚くても扱いやすい
+	BEMが多くの現場で採用されています。
+
+
+	Block Element Modifierの頭文字を取った設計思想で、独特な命名規則を用いる。
+	OOCSSはマルチクラス(要素に対して複数のクラスを使う)に対し、BEMはシングルクラスでスタイルを適用させます。
+
+	原則：
+	以下の３つに分ける
+
+
+	Block：大枠となる独立した要素。（例）ヘッダー、ナビゲーション、フッターなど独立したパーツ
+
+	Element： Block中の要素。（例）Blockの中に含まれる様な検索ボタン、検索フィールド
+			など機能を持つパーツ
+
+	Modifier:：BlockやElementのスタイル。（例）BlockにもElementにも適用される装飾
+
+・命名規則
+	class名であれば以下のように命名します。
+
+	class="block__element–-modifier"
+
+	・blockとelementはアンダースコア2つで区切る
+	・Elementとmodifierはハイフン2つで区切る
+	・ハイフンとアンダースコアは2つ
+	・block, element, modifierが複数単語になる場合、単語と単語の間はハイフン1つで区切る
+	・ハイフン1つの場合はElementとModifierの区切りではなく、ただの単語の区切りとして使用
+
+
+	以下ははBEM記法でclassを付けたサンプルです。
+
+
+	<section class="about">
+  		<div class="about__item">
+    			<h2 class="about__item-ttl">ここにタイトルが入る</h2>
+    			<p class="about__item-txt">テキストが入る。テキストが入る。</p>
+    			<a href="#" class="about__item-link about__item-link--red">MORE</a>
+  		</div>
+	</section>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+
+
+・SMACSS
+	Scalable and Modular Architecture for CSSの略で、OOCSSやBEMの流れを汲んで
+	生まれた設計思想です。OOCSS同様マルチクラスでスタイルの適用をします。
+	
+	原則：
+	スタイルをBase、Layout、Module、State、Themeの５つに分割する
+	一部クラスに接頭辞(プレフィックス)を付ける
+
+	Base, Layout, Module, State, Theme
+	Base：要素セレクタ・属性セレクタ・擬似セレクタなどに対して適用するスタイルを指定。CSSリセットなどもこちらに含まれる。
+	ex. body・a・input...
+
+	Layout：ヘッダー、フッター、サイドバーなど構成の大枠のものを定義。接頭辞に.l-や.la-を付ける。
+
+	Module：ページを構成する再利用可能なパーツごとのスタイルを指定。接頭辞は付けないので頭に何も付いていない
+	クラスがあれば、それはモジュールという事。
+
+	State(状態)：Javascriptで状態を変化させる時のパターン分けなどを定義。接頭辞に.is-を付ける。
+	ex. .is-disabled・.is-active・.is-errorなど
+
+	Theme(テーマ)：レイアウトやモジュールなど全体のテーマカラーを変更したい場合に使用。接頭辞に.theme-を付ける。
+
+	SMACSSはSassを利用する事を前提としており、ファイルを細分化した後に全てstyle.scssに＠import
+	してコンパイルする事を推奨しています。
