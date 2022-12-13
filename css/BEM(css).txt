@@ -19,35 +19,178 @@
 	以下の３つに分ける
 
 
-	Block：大枠となる独立した要素。（例）ヘッダー、ナビゲーション、フッターなど独立したパーツ
+	Block：でかいくくり。大枠となる独立した要素。（例）ヘッダー、ナビゲーション、フッターなど独立したパーツ
 
-	Element： Block中の要素。（例）Blockの中に含まれる様な検索ボタン、検索フィールド
+	Element： でかいくくりの中にある要素。Block中の要素。（例）Blockの中に含まれる様な検索ボタン、検索フィールド
 			など機能を持つパーツ
 
-	Modifier:：BlockやElementのスタイル。（例）BlockにもElementにも適用される装飾
+	Modifier:：上記二つの変化球。BlockやElementのスタイル。（例）BlockにもElementにも適用される装飾
+
+基本的な考えとか前提とか
+	BEMの中でも特にMindBEMdingと呼ばれている命名法をベースとしている
+	SCSSを使用する
+	基本的にはシングルクラスで設計したい
+	HTMLの構造とSCSSの構造は極力分離したい
+
+
 
 ・命名規則
-	class名であれば以下のように命名します。
 
-	class="block__element–-modifier"
+	block__element--modifier のように, blockとelementはアンダースコア2つで区切り, elementと
+	modifierはハイフン2つで区切る.blockが複数単語になる場合は, 単語と単語の間はハイフン1つで区切る.
+ 	element, modifierが複数単語になる場合も同様である.
 
-	・blockとelementはアンダースコア2つで区切る
-	・Elementとmodifierはハイフン2つで区切る
-	・ハイフンとアンダースコアは2つ
-	・block, element, modifierが複数単語になる場合、単語と単語の間はハイフン1つで区切る
-	・ハイフン1つの場合はElementとModifierの区切りではなく、ただの単語の区切りとして使用
+	例えばarticle-listというblockの中にarticle-titleというelementがある場合, 
+	このelementのクラス名は article-list__article-title となる.
+
+・ファイル
+	SCSSファイルは1blockにつき1ファイルで作成する.逆に言うと1ファイル内に複数のblockが定義されているのは違反である.
+	ファイル名は block名.scssとする.
+
+	上記の article-list blockの例で言うと, このblockが定義されているファイルは article-list.scss となる.
+
+	CSSは全ての名前がグローバルなため, 命名が重複するとメンテナンス性が著しく低下するのが弱点であるが, 
+	BEMは命名規則を厳しく縛ることによってこの弱点を克服しており, element名はいくら重複しても問題ない.
+	ただし, block名が重複してしまうとせっかく克服したものが台無しになってしまうため絶対に避けなければならない.
+	1ファイルにつき1blockしか定義せずファイル名をblock名にする規則を守ってさえいれば, block名が重複する心配が無い.
 
 
-	以下ははBEM記法でclassを付けたサンプルです。
+
+SCSS
+	以下のSCSSの機能を用いたルールを設定する.
+
+	・elementはネストと親セレクタ名参照を使って定義する
+		element内にさらにelementをネストして定義してはいけない
+	・modifierはネストと親セレクタ名参照を使って定義する
+		modifierはplaceholder selectorを使って差分のみ記述する
 
 
-	<section class="about">
-  		<div class="about__item">
-    			<h2 class="about__item-ttl">ここにタイトルが入る</h2>
-    			<p class="about__item-txt">テキストが入る。テキストが入る。</p>
-    			<a href="#" class="about__item-link about__item-link--red">MORE</a>
-  		</div>
-	</section>
+	elementはネストと親セレクタ名参照を使って定義する
+		例えば article-list__article-title を定義すると以下のようになる.
+
+		.article-list {
+  			width: 100%;
+
+  			&__article-title {
+    			font-size: 20px;
+  			}
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
