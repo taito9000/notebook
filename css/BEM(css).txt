@@ -21,10 +21,11 @@
 
 	Block：でかいくくり。大枠となる独立した要素。（例）ヘッダー、ナビゲーション、フッターなど独立したパーツ
 
-	Element： でかいくくりの中にある要素。Block中の要素。（例）Blockの中に含まれる様な検索ボタン、検索フィールド
-			など機能を持つパーツ
+	Element： でかいくくりの中にある要素。Block中の要素。（例）Blockの中に含まれる様な検索ボタン、
+			検索フィールドなど機能を持つパーツ
 
-	Modifier:：上記二つの変化球。BlockやElementのスタイル。（例）BlockにもElementにも適用される装飾
+	Modifier:：上記二つの変化球。BlockやElementのスタイル。（例）BlockにもElementにも
+	適用される装飾
 
 基本的な考えとか前提とか
 	BEMの中でも特にMindBEMdingと呼ばれている命名法をベースとしている
@@ -44,15 +45,16 @@
 	このelementのクラス名は article-list__article-title となる.
 
 ・ファイル
-	SCSSファイルは1blockにつき1ファイルで作成する.逆に言うと1ファイル内に複数のblockが定義されているのは違反である.
-	ファイル名は block名.scssとする.
+	SCSSファイルは1blockにつき1ファイルで作成する.逆に言うと1ファイル内に複数のblockが定義されている
+	のは違反である.ファイル名は block名.scssとする.
 
 	上記の article-list blockの例で言うと, このblockが定義されているファイルは article-list.scss となる.
 
 	CSSは全ての名前がグローバルなため, 命名が重複するとメンテナンス性が著しく低下するのが弱点であるが, 
 	BEMは命名規則を厳しく縛ることによってこの弱点を克服しており, element名はいくら重複しても問題ない.
 	ただし, block名が重複してしまうとせっかく克服したものが台無しになってしまうため絶対に避けなければならない.
-	1ファイルにつき1blockしか定義せずファイル名をblock名にする規則を守ってさえいれば, block名が重複する心配が無い.
+	1ファイルにつき1blockしか定義せずファイル名をblock名にする規則を守ってさえいれば, 
+	block名が重複する心配が無い.
 
 
 
@@ -78,90 +80,483 @@ SCSS
 
 
 
+・element内にさらにelementをネストして定義してはいけない
+	仮にHTMLが以下の構造になっているとする.
 
+	<div class="article-list">
+  		<div class="article-list__article-title">
+    		タイトル
+    			<span class="article-list__article-subtitle">サブタイトル</span>
+  		</div>
+	</div>
 
+	この場合に, HTMLではネストしているからといって以下のようにarticle-subtitleを定義するのは違反である.
+	(そもそもこの例だとHTMLのほうでクラス名を間違っているのでspanには意図したスタイルは適用されないが)
+	article-subtitleはHTMLの構造ではarticle-titleの子なので, 
+	SCSSの構造でもarticle-titleの
+	子であるようにネストして書きたくなるが, このSCSS構造を許すとHTMLの構造とSCSSの構造を分離できなくなる.
 
+	HTMLとSCSSの分離を目指すため, HTMLの構造がどうであれ, elementがblock以外を親に持つのを避け, 
+	以下のように書く.
 
 
+	.article-list {
+  	width: 100%;
 
+  		&__article-title {
+    			font-size: 20px;
+  		}
 
+  		&__article-subtitle {
+    			font-size: 16px;
+  		}
+	}
 
 
 
 
+・modifierはネストと親セレクタ名参照を使って定義する
+	例えばarticle-titleには文字色が赤いものとそうでないものがあるとき, 
+	article-titleのmodifierをネストして定義する.
 
 
+	.article-list {
+  		width: 100%;
 
+  		&__article-title {
+    		font-size: 20px;
 
+    			&--red {
+      		// この中身がどうなるかは後述. もちろんこのままでは何も機能しない.
+    			}
+  		}
 
+  		&__article-subtitle {
+    		font-size: 16px;
+  		}
+	}
 
+	この場合例えばHTMLはこうなる.
 
+	<div class="article-list">
+  		<div class="article-list__article-title">
+    			赤くないタイトル
+    		<span class="article-list__article-subtitle">サブタイトル</span>
+  		</div>
 
+  		<div class="article-list__article-title--red">
+    			赤いタイトル
+    		　<span class="article-list__article-subtitle">サブタイトル</span>
+  		</div>
+	</div>
 
 
 
 
+modifierはplaceholder selectorを使って差分のみ記述する
+	引き続いて上記の例で説明する.
+	仮に, article-list__article-title--red は文字色が赤いだけで, 
+	その他のスタイルは全て article-list__article-title と共通であると
+	すると以下のようになる.
 
 
+	.article-list {
+  	width: 100%;
 
+  	&__article-title {
+    	　font-size: 20px;
 
+    	　&--red {
+      	　font-size: 20px;
+      	　color: red; 
+    	　}
+  	}
 
+  	　&__article-subtitle {
+    		font-size: 16px;
+  	　}
+	}
 
+この例では共通部分は font-size: 20px; だけなので問題ないように見えるが, 共通部分が
+さらに増えた場合, 
+article-list__article-title--red と article-list__article-title
+ の共通部分の整合性を保ちつつ管理するのは大変面倒である.
+modifierが --red だけならまだしも --green や --blue が登場するとさらに地獄になる.
 
+これを避けるため共通部分は以下のようにplaceholder selectorを使って一箇所にまとめ,
+ modifierにはelementに対する差分のみを記述すればいいようにする.
 
 
 
+.article-list {
+  width: 100%;
 
+  %__article-title {
+    　font-size: 20px;
+  　}
 
+  　&__article-title {
+    　@extend %__article-title;
 
+    　&--red {
+      　@extend %__article-title;
+      　color: red; 
+    　}
+  　}
 
+  　&__article-subtitle {
+    　font-size: 16px;
+  　}
+　}
 
+--green や --blue が登場しても以下のように簡潔である.
 
 
+.article-list {
+  width: 100%;
 
+  %__article-title {
+    　font-size: 20px;
+  　}
 
+  　&__article-title {
+    　@extend %__article-title;
 
+    　&--red {
+      　@extend %__article-title;
+      　color: red; 
+    　}
 
+ 	　&--green {
+      　@extend %__article-title;
+      　color: green; 
+    　}
 
+    　&--blue {
+      　@extend %__article-title;
+      　color: blue; 
+    　}
+  　}
 
+  　&__article-subtitle {
+    　font-size: 16px;
+  　}
+　}
 
 
+HTML
+HTMLにも以下のように気をつける点がある.
 
+・blockの子としてblockが登場してもよい
+・blockの無いところにelementが登場してはいけない
+・シングルクラスで記述する
 
 
+blockの子としてblockが登場してもよい
+	(むしろこのルール無いと書けないでしょという感じだが)
+	例えばカテゴリ別に記事が並んでいるようなページを考えると以下のようになる.
 
 
+　<div class="category-list">
 
+  		<div class="category-list__category-title">
+    			カテゴリ1
+  		</div>
 
+  	<div class="article-list">
 
+    		<div class="article-list__article-title">
+      		タイトル
+    		</div>
 
+    		<div class="article-list__article-title">
+      		タイトル
+    		</div>
 
+  	</div>
 
+  	<div class="category-list__category-title">
+    		カテゴリ2
+  	</div>
+  	<div class="article-list">
+    		<div class="article-list__article-title">
+      		タイトル
+    		</div>
+    		<div class="article-list__article-title">
+      		タイトル
+    		</div>
+  	</div>
+　</div>
 
+・category-list blockの子要素として 
+	article-list blockが登場しているが, これは全く問題ない.
+	そしてSCSSは1ファイルに1blockであるため, category-list と article-list 
+	は互いにネストすることもなく完全に独立して定義する.
 
 
 
+・blockの無いところにelementが登場してはいけない
+	このようなSCSSがあるとする.
 
 
+　.hoge-block {
+  	width: 5000px;
 
+  	&__link {
+    		color: blue;
+    		cursor: pointer;
+    		text-decoration: underline;
+  	}
+　}
 
 
+	このとき, hoge-block の子ではない場所で hoge-block__link を指定してはいけない.
 
 
+　<div class="article-list">
+  　　<!-- これは違反である! -->
+  　<a class="hoge-block__link">
+    　　記事へのリンク
+  　</a>
+　</div>
 
 
+	BEMの長所の1つとして, ｢SCSSのとある箇所がどの範囲のHTMLに影響を及ぼしているか｣を予測しやすい
+	という点があるが, 例に上げたような書き方を許してしまうとその長所を殺し, hoge-block__link 
+	のメンテナンスコストが爆増する.
+	そのため, hoge-block__link が登場してよいのは hoge-block の範囲内だけである.
 
+	｢とはいってもこのサイト全体でリンクのスタイルは統一したいんだけど｣というニーズはいくつか発生するはずである. 
+	これの対処は下記のTipsの block横断で共通にしたいスタイルは専用ファイルに切り出す に記載した.
 
 
 
+・シングルクラスで記述する
+	基本的に全てシングルクラスで記述する. 後述のTipsでは例外的にマルチクラスを許容する場合の説明をするが, 
+	それ以外の場合ではマルチクラス指定は禁止する.
 
+	例えば上記で違反の例として使った以下のHTMLを考える.
 
 
+　<div class="article-list">
+  　<a class="hoge-block__link">
+    　記事へのリンク
+  　</a>
+　</div>
 
 
+	この違反状態を解決するために以下のように書くのもマルチクラスになってしまっているため違反である.
 
 
+　<div class="article-list hoge-block">
+  　<a class="hoge-block__link">
+    　記事へのリンク
+  　</a>
+　</div>
 
+
+	シングルクラスの話題とは少しずれるが, 上記のマルチクラス違反を回避しようとして以下のように書くの
+	も避けるべきである.
+
+
+　<div class="hoge-block">
+  　<div class="article-list">
+    　<a class="hoge-block__link">
+      　記事へのリンク
+    　</a>
+  　</div>
+　</div>
+
+
+	hoge-block の範囲内で hoge-block__link が登場しているぶんには違反ではない.
+	しかし, article-list の範囲内に hoge-block__link が登場してしまっている状態は解消されない.
+	これもまた長い目で見ればSCSSのメンテナンスコストを増大させる.
+
+
+
+
+・Tips
+	少々細かいものを紹介する.
+
+	blockの単位と大きさにこだわらない
+	blockのmodifierは使わない
+	blockにはmarginを指定しない
+	blockとelementのマルチクラスのみ許容する
+	block横断で共通にしたいスタイルは専用ファイルに切り出す
+
+
+
+・blockの単位と大きさにこだわらない
+	HTMLの構造を無視してSCSSを作り, HTML的にはblockの子としてblockが存在しても構わないという
+	条件だと,
+	どういう単位･大きさでblockを作っていけばいいかは設計者の気分に委ねられている.
+
+	このマニュアルではblockの大きさは下記2つの判断基準でしか決めない.
+
+	１、1ページ(または1箇所)のみでなく, 複数箇所で使うことになるUI要素があれば, それをblockとする
+	２、上記の基準で判断できない場合は1blockが大きくなりすぎないように大雑把にblockを決める
+	　　要するに適当である.
+
+	特にBEM初心者であれば, どこからどこまでを1つのblockとし, どこから別のblockとして定義していくか
+	困ると思うが, 困ったら適当で構わない.
+
+	ここまでで説明したようなルールに従って記述されたSCSSとHTMLでは, 大きい1つのblockを小さい2つ
+	のblockに分割するような変更はかなり容易なはずである.
+	容易であればこそ, 再利用性が高いと判断できないものについては無理に適切な大きさになるように
+	blockを細かく作ろうとせず, ちょっと大きすぎるくらいでblockを作っておき, ｢この部分は再利用し
+	たほうがよさそうだ｣と判断できた時点でリファクタリングすればよい.
+
+
+・blockのmodifierは使わない
+	BEMの本来の規則ではblockのmodifierは存在してよいことになっているはずだが, このマニュアル
+	ではこれを禁止している.
+	理由はそもそもそんなもの必要ないということと, SCSSでいい具合に書く方法が見いだせていないということである.
+
+	細かくは説明しないが, blockのmodifierを用意するとなると考えなければならないことがすごく増える. 
+	このマニュアルは2倍くらいの量になりそうだし, SCSSも複雑化する.
+	なにより, blockのmodifierを使えなくとも十分な表現が可能なので必要ない.
+
+
+
+
+
+
+・blockにはmarginを指定しない
+	気をつけるべきはほぼmarginのみの場合が多いが, margin以外にも要素の外側に影響を
+	及ぼすようなスタイルは指定するべきでない.
+
+	例えばSNSのユーザーページのように, 友人のリスト･写真のリスト･投稿のリストなどのいろいろな
+	リストが並ぶページを考える.
+
+	<div class="user-page">
+
+  		<div class="friend-list">
+    			<!-- 略 -->
+  		</div>
+
+  		<div class="image-list">
+    			<!-- 略 -->
+  		</div>
+
+  		<div class="post-list">
+    			<!-- 略 -->
+  		</div>
+
+	</div>
+
+
+	このとき, それぞれのリスト同士は10pxずつmarginをとるとした場合に以下のように書くのは
+	避けるべきである.
+
+	ほんとは各ブロック別ファイルになる
+
+
+	.user-page {
+	}
+
+	.friend-list {
+  	margin-bottom: 10px;
+	}
+
+	.image-list {
+  	margin-bottom: 10px;
+	}
+
+	.post-list {
+  	margin-bottom: 10px;
+	}
+
+
+	前述の blockの単位と大きさにこだわらない で軽く触れたが, blockは一箇所だけでなく複数箇所
+	で使われうるということを念頭に置くべきである.
+	friend-list blockの margin-bottom: 10px; の指定は, ユーザーページでfriend-list
+	が表示されることを前提にした指定であり, ユーザーページ以外でfriend-listを表示したい場合に
+	邪魔になりかねないものである.
+
+	したがって, blockへのmargin指定はblockの汎用性を下げるため指定するべきでない.
+
+
+
+
+
+・blockとelementのマルチクラスのみ許容する
+	｢でもblockにmargin指定しないとユーザーページの各リストが10pxのマージンとれないでしょ｣という場合に対処するため, blockとelementが指定されるマルチクラスのみ許容することにする.
+	具体的には以下のようにする.
+
+
+	<div class="user-page">
+  		<div class="user-page__list friend-list">
+    			<!-- 略 -->
+  		</div>
+  		<div class="user-page__list image-list">
+    			<!-- 略 -->
+  		</div>
+  		<div class="user-page__list post-list">
+    			<!-- 略 -->
+  		</div>
+　　　</div>
+
+	ほんとは各ブロック別ファイルになる
+
+
+
+	.user-page {
+  		&__list {
+    		margin-bottom: 10px;
+  		}
+	}
+
+	.friend-list {
+	}
+
+	.image-list {
+	}
+
+	.post-list {
+	}
+
+	このように書くことで, 各blockの汎用性を保ちつつmarginは実現できる.
+	前述の通り, これ以外の場合のマルチクラス指定はするべきではない.
+
+
+
+
+
+
+・block横断で共通にしたいスタイルは専用ファイルに切り出す
+	例えばサイト全体でリンクのスタイルは統一したい場合, blockそれぞれにリンクとなるelementをコピペ
+	して定義せざるを得ないため, メンテナンス性もクソもない状態になる.
+
+	この場合は, block横断で共通となるファイルを別に用意し, その中にplaceholder selector
+	でリンクのスタイルを定義しておく.
+	そのファイルを各blockでimportして必要な箇所でextendする.
+
+
+	global.scss
+
+
+	%link {
+  	cursor: pointer;
+  	text-decoration: underline;
+	}
+
+
+
+	article-list.scss
+
+
+	@import "global";
+
+	.article-list {
+  	　&__link {
+    		@extend %link;
+    		font-size: 16px;
+  	　}
+	}
+
+	blockそれぞれにリンクとなるelementを定義しなければならない点ではやや冗長だが, 
+	こうすることで全blockで完全に同一のリンクのスタイルを用意することも, 一部のblockで少しだけ
+	変更したリンクのスタイルを用意することも可能である.
 
 
 
