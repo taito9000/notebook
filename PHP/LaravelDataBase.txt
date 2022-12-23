@@ -45,9 +45,18 @@
 
 
 ・fillable
-　マスアサインメント脆弱性への対策として使われる。
+　配列で値を一括設定する場合はfillableによるマスアサインメント脆弱性への対策が必要。
+モデルクラスにprotectedの$fillableプロパティに変更したいカラム名を指定する。
+
+class Message extends Model
 
 
+{
+　use HasFactory;
+
+  protected $fillable = ['name', 'comment'];
+
+}
 
 
 
