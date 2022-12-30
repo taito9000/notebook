@@ -1,0 +1,425 @@
+
+・todoリスト作成手順
+	1、設定ファイルを編集する
+	2、マイグレーションファイルを設定する
+	3、modelを作成する
+	4、Routerを作成する
+	5、contorollerとviewを作成する
+	設定マｍｒｃｖ
+
+	tasklist => config => app.phpを開く。timezoneをAsia/Toykoに変更。
+	等々調べよう。
+
+・マイグレーションファイルでできること
+	１、テーブルの作成、削除
+	２、テーブルの定義の変更
+	３、カラムの追加、変更、削除
+
+・マイグレーションファイル作成手順
+	１、xamppでshellを起動
+	２、プロジェクトフォルダ下に移動（c:￥xampp￥htdocs￥tasklist）に移動する
+	３、マイグレーションファイルの作成コマンドを実行する
+
+
+	# php　artisan make:migration create_task_table --create=tasks
+
+	[	マイグレーションの作成コマンド 	    ][ファイル名を指定	　]　[作成するテーブル名を指定]
+
+	通常ファイル名は「create_[テ－ブル名]_table」と名付ける
+
+	生成されたマイグレーションファイルを確認する。
+	「database/migrations」フォルダ配下に「年_月_日_時_[ファイル名].php」
+	という名前で格納される。同じフォルダにある二つのファイルはデフォルトで生成されるもの。
+
+
+・編集するファイルは二か所
+	１up() 作成するテーブルとそのカラムについての情報を記述する
+	２down()　デフォルトでテーブルが存在している場合削除する
+
+
+	１
+  	public function up()
+    		{
+        		Schema::create('tasks', function (Blueprint $table) {
+        		$table->id();
+			$table->timestamps();
+        		});
+    		}
+
+	を
+  	public function up()
+    	{
+        Schema::create('tasks', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('title');
+            $table->timestamps();
+        });
+    	}
+	に変更
+	変えた部分にどのようなカラムを作りたいかを書いていく。
+	tasksはテーブル名
+	新規でテーブルを作成するにはBlueprintメソッドを使用する。$table->****　と記述することで、
+	テーブルのカラムを細かく指定することが可能。
+	$table->の部分はスキーマビルダと呼ばれる。
+
+
+
+・Modelの作成
+	Laravalでは、「テーブル名（小文字＋複数形のｓ）」と「ファイル名（頭文字大文字＋小文字単数形）」を
+	同じにする（＝命名規則）と、Ｍｏｄｅｌとテーブルが自動的に連携する。
+
+	Ｍｏｄｅｌ　＝　Ｔａｓｋ．ｐｈｐ
+	データベース　＝　ｔaｓｋｓ
+
+	xamppのシェルで　php artisan make:model ファイル名
+			php artisan make:model Task
+	先ほども言ったように、ファイル名の頭文字は大文字
+
+
+・Routing編集
+	xampp/htdocs/tasklist/routes/web.phpを編集していく
+
+・CRUD
+			DB操作		対応するHTTPリク	アクション名
+C(Create)		insert		Post			store
+
+R（Read）		select		Get			show	
+
+U（Update）	update		Post			update
+
+D（Delete）	delete		Destroy		destroy
+
+	データベース側のルーティング
+	1
+		POST (Create/@store)
+
+		Route::post('tasks', 'TasksController@store');
+
+		TasksControllerの部分を任意でつける
+		データベースに登録するボタンなどをクリックした際に動くルーティング
+
+	2
+
+		GET(Read/@show)
+
+		Route::get('tasks/{***}','TasksController@show');
+	
+		{***}に対応するデータを呼び出すルーティングです。
+
+
+	３	
+
+		PUT（Update/@update）
+
+		Route::put('tasks/{***}','TasksController@update');
+
+		{***}に対応するデータを更新する際に動くルーティングです。
+
+	4
+
+		DESTROY(Delete/@destroy)
+
+		Route::delete('tasks/{***}','TasksController@destroy');
+
+		{***}に対応するデータを削除する際に動くルーティングです。
+
+
+		画面側のルーティング
+
+	５
+		INDEX（インデックス画面の表示）
+
+		Route::get('tasks','TasksController@index');
+
+		インデックスページ（データ一覧）を表示するためのルーティングです。「show」操作の補助を行うための画面です。
+
+	６
+		CREATE（データ登録画面の表示）
+
+		Route::get('tasks','TasksController@create');
+
+		データの新規登録画面などを表示するためのルーティングです。「store」操作の補助を行うための画面です。
+
+	７
+		EDIT（データ編集画面の表示）
+
+		Route::get('tasks/{***}','TasksController@edit');
+	
+		{***}に対応する登録済みデータの編集画面などを表示するためのルーティングです。
+		「update」操作の補助を行うための画面です。
+
+
+		この一行で７つの基本ルーティングが完了するが、どのアクションが必要かの内訳は把握しないといけないので、
+		全てしっかり覚える。
+		Route::resource('tasks','TasksController@edit');
+
+
+
+・contorollerの作成
+		ファイル名の最後を「Controller」にする。今回は「TasksController.php」
+
+		xamppシェルで php artisan make:controller 「Controller名」 --resource
+
+		php artisan make:controller TasksController --resource
+
+		--resourceとつけることでCRUD操作に対応するControllerを自動で生成してくれる。
+
+		php artisan route:list で設定されているルーティングの一覧を確認できる。
+		そして、GET|HEADのものは画面を表示する操作でそれ以外のものはDBを操作するものを意味している。
+
+
+
+
+・viewの作成
+	app.blade.php
+	index.blade.php
+	errors.blade.php
+	を作成する。Laravelでは、作成するウェブサイトの前ページに共通する部分やメインコンテンツの埋め込み予定位置を
+	まとめて、まずはレイアウトファイルを作成します。
+
+
+	xampp/htdocs/tasklist/resources/layouts/app.blade.php
+
+
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+    		<meta charset="utf-8">
+   	 	<meta name="viewpoint" content="width=device-width,initial-scale=1">
+   		 <title>Todo List</title>
+	</head>
+
+	<body>
+    <div class="container">
+	<nav class="navbar navbar-default">
+	<!-- ナビバーの内容 -->
+	</nav>
+	</div>
+	@yield('content')
+
+	</body>
+	</html>
+
+
+
+	@yield('content')と書いたところにどのコンテンツを呼び出すかは、
+	コンテンツ側に「@extends('layouts.app')
+
+
+
+・Controllerの追記
+	ControllerではModelで用いたデータの操作を頻繁に行います。そのため「use」と記述し、Modelを
+	保存している場所の名前空間を指定しておくことで、毎回長いフォルダ構造を記述する必要がなくなり、
+	ソースがシンプルで読みやすくなる。
+
+・名前空間とは（namespace）
+	ファイルを保存している場所のパスのこと。
+
+	namespace'ファイルを保存している場所のパス'; で記述できる
+
+
+・useとは
+	名前空間やファイルのパスを指定することで、その指定した先にあるクラスやメソッドをパスの
+	指定なしに使用できる仕組み。
+
+	use'ファイルを保存している場所のパス';
+
+
+	.C:\xampp\htdocs\tasklist\app\Http\Controllers\TasksController.php
+
+  		public function index() //indexで取得したデータを一覧表示
+    		{
+        		$tasks=Task::orderBy('created_at','asc')->get();
+        		return view('tasks.index',[
+				'tasks=>$tasks
+	　　		']);
+    		}
+
+	Taskモデルに対して（Task::）、作成日時（created_at）の昇順（asc）に並べて（orderBy）
+	データを抽出し、配列（$tasks）に格納（＝）せよという処理。view関数はContoroller で特定のviewを
+	表示させたいときに使う関数で、直接Routerに書く事も可能。第一引数のみでも動きますが、第二引数で配列を
+	渡すことも可能。
+
+	taskフォルダ配下に作成したindex.blade.phpというviewに配列（$tasks）のデータをそのまま渡すという処理
+
+
+
+・viewメソッド
+
+	view('フォルダ名.ファイル名',[
+
+		'渡す変数名'＝＞変数に代入する値
+
+	])
+
+	第一引数で表示させたいviewファイルを指定し、第二引数で表示する値を指定します。特に必要ない場合、
+	第二引数は省略可能。
+	「resource/view」よりも下にフォルダを作っている場合はフォルダ名を記述する。そうでなければ
+	ファイル名「***.blade.php」のうち、＊＊＊の部分を記述する。
+	表示先で使用する変数名と、その変数に代入して渡す値を（配列でもいい）を記述。渡すものがない場合、省略可。
+
+
+
+・Eloquient
+	「$tasks=Task::orderBy('created_at','asc')->get();」はEloquentというLaravel独自の
+	DB操作機能。DBに存在する１つのレコードを１つのオブジェクトとして扱いテーブル操作を行うことができます。
+
+
+
+１、データの抽出
+	$[結果を格納する配列名]＝[モデル名]::[メソッド１]ｌｍ
+							ー＞[メソッド２]
+							ー＞[・・・]；
+	結果を格納する配列名は全て小文字。メソッドはデータの抽出条件のようなもの。「ー＞」で連結することで、複数指定可能。
+
+
+
+２，データを登録する場合
+
+	$[配列名]=new[モデル名];  モデルの新しいインスタンスを作成
+
+	$[配列名]->[項目名１]=$request->[項目名１]
+	$[配列名]->[項目名2]=$request->[項目名2]
+	$[配列名]->[項目名3]=$request->[項目名3]
+
+	$[配列名]ー＞save();
+
+	$requestはcontrollerに自動生成されている引数のことで、配列のデータの意味。引数で受け取った値を
+	今回生成した配列の同じ項目に代入。
+
+	最後にsaveメソッドを実行することで、データの登録が完了。
+
+
+
+	例
+	$task = new Task;
+
+	$task->title = $request->title;
+	$task->user_id = $request->user_id;
+	$task->save();
+	ます、データ登録用配列＄taskを作成し、引数の配列$requestに格納されている各項目の値を$taskそれぞれに
+	代入する、最後にsave()メソッドで、$taskの中身が新規レコードとして登録される。
+
+３，データを更新する場合
+
+
+
+	$[配列名]=[モデル名]::[メソッド]
+
+	$[配列名]->[項目名１]=$request->[項目名１]
+	$[配列名]->[項目名2]=$request->[項目名2]
+	$[配列名]->[項目名3]=$request->[項目名3]
+
+	$[配列名]ー＞save();
+
+
+	ます、更新対象のデータを特定しその存在をチェック。requestはContorollerに自動生成されている引数のことで、
+	配列データの意味。　引数で受け取った値を、今回生成した配列の同じ項目に代入。最後にsave()メソッドによって
+	データの更新が完了。
+
+
+	この場合のメソッドは
+
+	findOrFail(主キー)　指定したキーに該当のレコードがない場合、例外（ModelNotFoundException)を投げる。
+
+	firstOrFail()　where()などのメソッドと併用し、指定した条件に該当するレコードがない場合、例外を投げる。
+
+	例
+	$task = Task::findOrFail('$id')
+	$task->title = $request->title;
+	$task->user_id = $request->user_id;
+	$task->save();
+	まず、引数$idに当てはまるデータを探す。次に、引数の配列$requestに格納されている各項目の値を$taskにそれぞれ
+	代入する。最後にsave()メソッドを実行すると$taskの中身で$idに該当するレコードが更新される。
+
+
+４，データを削除する場合
+	$[結果を格納する配列名]＝[モデル名]::[メソッド]
+				ー＞delete();
+
+	ます、更新対象のデータを特定しその存在をチェックし、delete()メソッドでデータの削除が完了。
+
+
+
+	例１
+	$task = Task::findOrFail('$id')->delete();
+
+	例２
+
+	$task = Task::where(‘id',1)->firstOrFail();
+	$task->delete();
+
+
+
+	・viewの作成
+
+	@extends('layouts.app')　app.blade.phpのファイルに継承
+
+	@section('content')
+
+
+
+	@endsection
+
+	@yieldによって、@sectionと@endsectionで囲んだ内容を呼び出す。
+
+
+
+
+・バリデーションの方法
+
+
+ 	⓵ルート定義
+	　まず、routes/web.phpファイルに以下のルートを定義してあるとしましょう。
+	　use App\Http\Controllers\PostController;
+
+
+　	　Route::get('/post/create', [PostController::class, 'create']);
+　	　Route::post('/post', [PostController::class, 'store']);
+
+
+	　GETのルートは新しいブログポストを作成するフォームをユーザーへ表示し、
+	　POSTルートで新しいブログポストをデータベースへ保存します。
+
+
+
+ 	②コントローラ作成
+		次に、これらのルートへの受信リクエストを処理する単純なコントローラを見てみましょう。
+		今のところ、storeメソッドは空のままにしておきます。
+
+		<?php
+
+		namespace App\Http\Controllers;
+
+		use App\Http\Controllers\Controller;
+		use Illuminate\Http\Request;
+
+		class PostController extends Controller
+		{
+    			/**
+     		* 新ブログポスト作成フォームの表示
+     		*
+     		* @return \Illuminate\View\View
+     		*/
+
+    			public function create()
+    			{
+        			return view('post.create');
+    			}
+
+    			/**
+
+    			* 新しいブログポストの保存
+    			*
+     		* @param  \Illuminate\Http\Request  $request
+     		* @return \Illuminate\Http\Response
+     		*/
+
+    			public function store(Request $request)
+    			{
+        			// ブログポストのバリデーションと保存コード…
+    			}
+		}
+
+
+	③
